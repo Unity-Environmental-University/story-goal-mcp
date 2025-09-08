@@ -405,6 +405,18 @@ if __name__ == "__main__":
         phase = sys.argv[4] if len(sys.argv) > 4 else None
         stories = mcp.get_user_stories(user_key, goal_id, phase)
         print(json.dumps(stories, indent=2))
+    
+    elif command == "update-story":
+        if len(sys.argv) < 6:
+            print("Usage: update-story <user_key> <story_id> <phase> <notes>")
+            sys.exit(1)
+        user_key, story_id, phase, notes = sys.argv[2:6]
+        success = mcp.update_story_progress(user_key, story_id, phase, notes)
+        if success:
+            print(f"Updated story {story_id} to phase '{phase}'")
+        else:
+            print(f"Failed to update story {story_id}")
+            sys.exit(1)
         
     else:
         print(f"Unknown command: {command}")

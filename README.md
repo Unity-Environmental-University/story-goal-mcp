@@ -189,13 +189,46 @@ python3 story_goal_mcp.py create-story dev123 \
 | No goals | Stories roll up to goals |
 | Binary done/not-done | Phases: defining → developing → validating → complete |
 
+## 🔌 MCP Protocol Integration
+
+Story-Goal MCP now supports **native MCP protocol** for Claude Code integration!
+
+### Using as MCP Server
+
+```bash
+# Start MCP server (communicates via JSON-RPC)
+python3 mcp_server.py
+
+# Or use CLI version directly
+python3 story_goal_mcp.py handshake your-user "Your Name"
+```
+
+### Available MCP Tools
+
+- `story_goal_handshake` - Register/verify user workspace
+- `create_goal` - Create outcome-focused goals  
+- `create_story` - Create user stories with full context
+- `update_story_progress` - Update story phases with notes
+- `list_goals` - View goals with progress metrics
+- `list_stories` - View stories (all/filtered by goal/phase)
+- `get_story_details` - Detailed story view with goal context
+
+### Testing MCP Integration
+
+```bash
+# Run comprehensive protocol test
+python3 test_mcp_protocol.py
+
+# Expected: All tests pass, ready for Claude integration
+```
+
 ## 🔮 Future Features
 
-- [ ] Link stories to goals automatically
-- [ ] Progress updates with notes
+- [x] Link stories to goals automatically ✅ DONE
+- [x] Progress updates with notes ✅ DONE  
 - [ ] Story dependencies 
 - [ ] Time tracking per phase
-- [ ] MCP protocol integration
+- [x] MCP protocol integration ✅ DONE
 - [ ] Web interface
 - [ ] Story templates
 - [ ] Acceptance criteria management
