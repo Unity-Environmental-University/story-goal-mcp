@@ -1,0 +1,34 @@
+{
+  "_comment": "Example MCP server configurations for different Claude Code setups",
+  
+  "claude_code_standard": {
+    "mcpServers": {
+      "story-goal-mcp": {
+        "command": "python3",
+        "args": ["/Users/hallie/Documents/repos/tools/story-goal-mcp/mcp_server.py"],
+        "cwd": "/Users/hallie/Documents/repos/tools/story-goal-mcp"
+      }
+    }
+  },
+  
+  "claude_code_with_env": {
+    "mcpServers": {
+      "story-goal-mcp": {
+        "command": "python3",
+        "args": ["/Users/hallie/Documents/repos/tools/story-goal-mcp/mcp_server.py"],
+        "cwd": "/Users/hallie/Documents/repos/tools/story-goal-mcp",
+        "env": {
+          "PYTHONPATH": "/Users/hallie/Documents/repos/tools/story-goal-mcp"
+        }
+      }
+    }
+  },
+  
+  "claude_code_portable": {
+    "story-goal-mcp": {
+      "command": "python3",
+      "args": ["./mcp_server.py"],
+      "cwd": "/Users/hallie/Documents/repos/tools/story-goal-mcp"
+    }
+  }
+}

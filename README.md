@@ -44,6 +44,34 @@ python3 story_goal_mcp.py list-goals your-username
 python3 story_goal_mcp.py list-stories your-username
 ```
 
+### Install (local PATH)
+
+```bash
+bash scripts/install_local.sh
+export PATH="$HOME/.local/bin:$PATH"   # add to shell profile for persistence
+
+# Start MCP server from anywhere
+story-goal-mcp
+```
+
+### Run at Login
+
+macOS (launchd):
+
+```bash
+bash scripts/install_service_macos.sh
+# Logs:
+tail -f "$HOME/Library/Logs/story-goal-mcp.out" "$HOME/Library/Logs/story-goal-mcp.err"
+```
+
+Linux (systemd user):
+
+```bash
+bash scripts/install_service_systemd.sh
+systemctl --user status story-goal-mcp.service
+journalctl --user -u story-goal-mcp.service -f
+```
+
 ## 📋 Commands
 
 ### User Management

@@ -1,0 +1,15 @@
+[Unit]
+Description=Story-Goal MCP Server (user)
+After=default.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/env bash -lc 'exec story-goal-mcp'
+WorkingDirectory=%h
+Environment=PYTHONUNBUFFERED=1
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=default.target
+
