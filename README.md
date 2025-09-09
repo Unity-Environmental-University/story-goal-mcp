@@ -1,3 +1,4 @@
+
 # Story-Goal MCP Server
 
 > Part of the LXD MCP Suite — a cohesive set of MCP servers for learning experience design (coaching, Kanban, stories, and optional LLM adapters).
@@ -294,3 +295,5 @@ MIT License - Use freely for any purpose.
 ---
 
 *Build software that matters. Track outcomes, not just tasks.*
+
+> Internal Use Only — not licensed for external distribution or hosting.
