@@ -1,5 +1,13 @@
 # Story-Goal MCP Server
 
+> Part of the LXD MCP Suite — a cohesive set of MCP servers for learning experience design (coaching, Kanban, stories, and optional LLM adapters).
+
+## What it is
+Story/Goal MCP server that tracks outcomes (goals) and user stories with phases and progress notes.
+
+## Why it helps
+Keeps focus on deliverable outcomes and progress over time; complements Kanban for planning and execution.
+
 A lightweight MCP server that replaces task-focused todo lists with outcome-focused user stories and goals. Track meaningful progress toward user value instead of just checking off tasks.
 
 ## 🎯 Philosophy
