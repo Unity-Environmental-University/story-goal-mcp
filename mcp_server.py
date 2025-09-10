@@ -214,7 +214,101 @@ class StoryGoalMCPServer:
         elif tool_name == "list_stories":
             goal_id = arguments.get("goal_id")
             phase = arguments.get("phase")
-            return self.story_goal.get_user_stories(user_key, goal_id, phase)
+            since = arguments.get("since")
+            fields = arguments.get("fields") or []
+            confirm = bool(arguments.get("confirm", False))
+            stories = self.story_goal.get_user_stories(user_key, goal_id, phase)
+            # Optional since filter
+            if since:
+                try:
+                    import datetime
+                    since_dt = datetime.datetime.fromisoformat(since.replace('Z','+00:00'))
+                    def _u(s):
+                        ts = s.get('updated_at') or s.get('created_at')
+                        try:
+                            return datetime.datetime.fromisoformat(str(ts).replace('Z','+00:00'))
+                        except Exception:
+                            return since_dt
+                    stories = [s for s in stories if _u(s) > since_dt]
+                except Exception:
+                    pass
+            # Optional projection
+            if fields:
+                proj = []
+                for s in stories:
+                    out = {k: s.get(k) for k in fields if k in s}
+                    if 'last_note' in fields:
+                        notes = s.get('progress_notes') or []
+                        out['last_note'] = (notes[-1] if notes else None)
+                    proj.append(out)
+                stories = proj
+            # Optional confirm summary
+            if confirm:
+                for s in stories:
+                    try:
+                        ln = None
+                        if isinstance(s.get('last_note'), dict):
+                            ln = s['last_note'].get('notes')
+                        elif isinstance(s.get('progress_notes'), list) and s['progress_notes']:
+                            ln = s['progress_notes'][-1].get('notes')
+                        s['summary'] = f"{s.get('title','')} — {s.get('current_phase','')}: {ln or ''}"
+                    except Exception:
+                        continue
+            return stories
+
+        elif tool_name == "list_story_changes":
+            since = arguments.get("since")
+            phase = arguments.get("phase")
+            story_ids = set(arguments.get("story_ids") or [])
+            confirm = bool(arguments.get("confirm", False))
+            stories = self.story_goal.get_user_stories(user_key, None, phase)
+            import datetime
+            try:
+                def _parse_iso(ts: str):
+                    ts = str(ts)
+                    if not ts:
+                        return None
+                    if ts.endswith('Z'):
+                        ts = ts.replace('Z', '+00:00')
+                    dt = datetime.datetime.fromisoformat(ts)
+                    if dt.tzinfo is None:
+                        dt = dt.replace(tzinfo=datetime.timezone.utc)
+                    return dt
+                since_dt = _parse_iso(since) if since else None
+            except Exception:
+                since_dt = None
+            deltas = []
+            for s in stories:
+                if story_ids and s.get('id') not in story_ids:
+                    continue
+                upd = s.get('updated_at') or s.get('created_at')
+                try:
+                    upd_dt = _parse_iso(upd)
+                except Exception:
+                    upd_dt = None
+                if since_dt and upd_dt and not (upd_dt > since_dt):
+                    continue
+                last_note = (s.get('progress_notes') or [])[-1] if (s.get('progress_notes') or []) else None
+                delta = {
+                    'id': s.get('id'),
+                    'updated_at': upd,
+                    'changed': {
+                        'current_phase': s.get('current_phase'),
+                        'title': s.get('title'),
+                        'acceptance_criteria_changed': True if (s.get('acceptance_criteria') not in (None, [])) else False,
+                        'last_note': last_note
+                    }
+                }
+                if not confirm:
+                    # Keep compact: remove None values
+                    ch = {k:v for k,v in delta['changed'].items() if v is not None}
+                    delta['changed'] = ch
+                else:
+                    ln = (last_note or {}).get('notes') if isinstance(last_note, dict) else None
+                    delta['summary'] = f"{s.get('title','')} — {s.get('current_phase','')}: {ln or ''}"
+                deltas.append(delta)
+            deltas.sort(key=lambda d: str(d.get('updated_at')))
+            return deltas
             
         elif tool_name == "get_story_details":
             story_id = arguments.get("story_id")
